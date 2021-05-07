@@ -145,13 +145,68 @@ namespace TamagotchiAPI.Controllers
             {
                 return NotFound();
             }
+            // Playtime playtime = new Playtime();
+
+            playtime.When = DateTime.Now;
 
             playtime.PetId = pet.Id;
 
+            pet.HungerLevel += 3;
+            pet.HappinessLevel += 5;
+
             _context.Playtimes.Add(playtime);
+            await _context.SaveChangesAsync();
 
             return Ok(playtime);
         }
+
+        [HttpPost("{id}/feedings")]
+        public async Task<ActionResult<Playtime>> CreateFeedingForPet(int id, Feeding feeding)
+        {
+            var pet = await _context.Pets.FindAsync(id);
+
+            if (pet == null)
+            {
+                return NotFound();
+            }
+            // Playtime playtime = new Playtime();
+
+            feeding.When = DateTime.Now;
+
+            feeding.PetId = pet.Id;
+
+            pet.HungerLevel -= 5;
+            pet.HappinessLevel += 3;
+
+            _context.Feedings.Add(feeding);
+            await _context.SaveChangesAsync();
+
+            return Ok(feeding);
+        }
+
+        [HttpPost("{id}/scoldings")]
+        public async Task<ActionResult<Playtime>> CreateScoldingForPet(int id, Scolding scolding)
+        {
+            var pet = await _context.Pets.FindAsync(id);
+
+            if (pet == null)
+            {
+                return NotFound();
+            }
+            // Playtime playtime = new Playtime();
+
+            scolding.When = DateTime.Now;
+
+            scolding.PetId = pet.Id;
+
+            pet.HappinessLevel -= 5;
+
+            _context.Scoldings.Add(scolding);
+            await _context.SaveChangesAsync();
+
+            return Ok(scolding);
+        }
+
 
         // DELETE: api/Pets/5
         //
